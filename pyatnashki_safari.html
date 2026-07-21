@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Пятнашки</title>
+<style>
+body{font-family:-apple-system,Arial,sans-serif;background:#f4f4f4;margin:0;text-align:center}
+h2{margin:20px 0}
+#board{display:grid;grid-template-columns:repeat(4,75px);gap:6px;justify-content:center;margin:20px auto}
+.tile{
+width:75px;height:75px;border-radius:10px;border:none;
+font-size:28px;font-weight:bold;background:#007aff;color:#fff;
+}
+.empty{background:#ddd}
+button{padding:10px 18px;font-size:16px;border-radius:10px;border:none;background:#34c759;color:#fff}
+</style>
+</head>
+<body>
+<h2>Игра «Пятнашки»</h2>
+<button onclick="shuffle()">Перемешать</button>
+<div id="board"></div>
+
+<script>
+let arr=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0];
+const b=document.getElementById("board");
+
+function draw(){
+ b.innerHTML="";
+ arr.forEach((n,i)=>{
+   const x=document.createElement("button");
+   if(n===0){x.className="tile empty";x.disabled=true;}
+   else{
+     x.className="tile";
+     x.textContent=n;
+     x.onclick=()=>move(i);
+   }
+   b.appendChild(x);
+ });
+}
+function neigh(a,b){
+ let ra=Math.floor(a/4),ca=a%4,rb=Math.floor(b/4),cb=b%4;
+ return Math.abs(ra-rb)+Math.abs(ca-cb)===1;
+}
+function move(i){
+ let e=arr.indexOf(0);
+ if(neigh(i,e)){
+   [arr[i],arr[e]]=[arr[e],arr[i]];
+   draw();
+   if(arr.slice(0,15).every((v,i)=>v===i+1)) setTimeout(()=>alert("🎉 Победа!"),100);
+ }
+}
+function shuffle(){
+ do{
+   for(let i=arr.length-1;i>0;i--){
+      let j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+   }
+ }while(!solvable(arr)||arr.slice(0,15).every((v,i)=>v===i+1));
+ draw();
+}
+function solvable(a){
+ let inv=0;
+ for(let i=0;i<16;i++)for(let j=i+1;j<16;j++)
+   if(a[i]&&a[j]&&a[i]>a[j])inv++;
+ let rowFromBottom=4-Math.floor(a.indexOf(0)/4);
+ return (rowFromBottom%2===0)!==(inv%2===0);
+}
+draw();
+</script>
+</body>
+</html>
