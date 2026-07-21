@@ -1,0 +1,8 @@
+{
+  "name": "Пятнашки",
+  "short_name": "Пятнашки",
+  "start_url": "./pyatnashki_safari.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}
